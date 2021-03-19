@@ -36,6 +36,7 @@ int main(void) {
     nodes[16].next = &nodes[17];
     nodes[17].next = &nodes[14];
     is_correct = is_correct && ll_has_cycle(&nodes[11]);
+    printf("is_correct %d\n", is_correct);
     printf("Checking third list for cycles. There should be a cycle, ll_has_cycle says it has %s cycle\n", ll_has_cycle(&nodes[11])?"a":"no");
 
     nodes[18].next = &nodes[18];
