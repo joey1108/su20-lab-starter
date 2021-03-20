@@ -58,27 +58,28 @@ vector_t *vector_new() {
     vector_t *retval;
 
     /* First, we need to allocate memory on the heap for the struct */
-    retval = /* YOUR CODE HERE */
+    retval = malloc(sizeof(vector_t));/* YOUR CODE HERE */
 
     /* Check our return value to make sure we got memory */
-    if (/* YOUR CODE HERE */) {
+    if (retval==NULL) {/* YOUR CODE HERE */
         allocation_failed();
     }
 
     /* Now we need to initialize our data.
        Since retval->data should be able to dynamically grow,
        what do you need to do? */
-    retval->size = /* YOUR CODE HERE */;
-    retval->data = /* YOUR CODE HERE */;
+    retval->size = 1;/* YOUR CODE HERE */;
+    retval->data = malloc(sizeof(int)*1);/* YOUR CODE HERE */;
 
     /* Check the data attribute of our vector to make sure we got memory */
-    if (/* YOUR CODE HERE */) {
+    if (retval->data == NULL) {
         free(retval);				//Why is this line necessary?
         allocation_failed();
     }
 
     /* Complete the initialization by setting the single component to zero */
-    /* YOUR CODE HERE */ = 0;
+    /* YOUR CODE HERE */ 
+    retval->data[0] = 0;
 
     /* and return... */
     return retval;
@@ -96,8 +97,8 @@ int vector_get(vector_t *v, size_t loc) {
     /* If the requested location is higher than we have allocated, return 0.
      * Otherwise, return what is in the passed location.
      */
-    if (loc < /* YOUR CODE HERE */) {
-        return /* YOUR CODE HERE */;
+    if (loc < v->size) {/* YOUR CODE HERE */
+        return v->data[loc];/* YOUR CODE HERE */;
     } else {
         return 0;
     }
@@ -107,6 +108,11 @@ int vector_get(vector_t *v, size_t loc) {
    Remember, you need to free up ALL the memory that was allocated. */
 void vector_delete(vector_t *v) {
     /* YOUR SOLUTION HERE */
+    if (v == NULL) {
+        return;
+    }
+    free(v->data);
+    free(v);
 }
 
 /* Set a value in the vector. If the extra memory allocation fails, call
@@ -117,4 +123,27 @@ void vector_set(vector_t *v, size_t loc, int value) {
      */
 
     /* YOUR SOLUTION HERE */
+    /*
+    1. 保留需要释放的内存
+    2. 重新分配内存
+    3. 赋值新内存
+    4. free 1
+    */
+    if (loc<v->size) {
+        v->data[loc] = value;        
+    } else {
+        int* tmp = v->data;
+        v->data = malloc((loc+1)*sizeof(int));
+        int size = v->size;
+        int i = 0;
+        for (; i < size; ++i) {
+            v->data[i] = tmp[i];
+        }
+        for (; i < loc; ++i) {
+            v->data[i] = 0;
+        }
+        v->data[loc] = value;   
+        v->size = loc+1; 
+        free(tmp);    
+    }
 }
